@@ -9,32 +9,36 @@ class API < Grape::API
     {id: 1, url:'http://www.yahoo.co.jp'},
     {id: 2, url:'http://www.google.com'}
   ]
-
-  get :hello do
-    { hello: "world" }
-  end
-
+  
+  @@last_index = 2
+  
   resource :items do
     get '/' do
       @@items
     end
 
     get '/:id' do
-      puts params.id      
-
       for item in @@items
-        puts 'item: '
-        puts item[:id]
-        if item[:id] == params.id.to_i
-          puts 'hoge'
+        if item[:id] == params[:id].to_i
           return item
         end
       end
 
+      # TOOD: 404
       return {}
     end
-  end
 
+    post '/' do
+      data = JSON.parse(request.body.string)
+      @@last_index += 1
+      @@items.push({
+        id: @@last_index,
+        url: data['url']
+      })
+      {status: "ok"} 
+    end 
+
+  end
 
 end
 
