@@ -33,11 +33,20 @@ describe 'API' do
   end
 
   it "create" do
-    post '/api/v1/items', {"url"=>"http://http://www.apple.com/"}.to_json
+    post '/api/v1/items', {"url"=>"http://www.apple.com/"}.to_json
     expect(JSON.parse(last_response.body)).to eq({"status"=>"ok"})
     
     get '/api/v1/items'
     expect(JSON.parse(last_response.body).length).to eq(3)
+  end
+
+  it "update" do
+    put '/api/v1/items/3', {"url"=>"http://www.facebook.com/"}.to_json
+    expect(JSON.parse(last_response.body)).to eq({"status"=>"ok"})
+ 
+    get '/api/v1/items/3'
+    expect(last_response).to be_ok
+    expect(JSON.parse(last_response.body)).to eq({"id"=>3,"url"=>"http://www.facebook.com/"})
   end
 
 end

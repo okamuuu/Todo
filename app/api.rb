@@ -32,10 +32,22 @@ class API < Grape::API
       data = JSON.parse(request.body.string)
       @@last_index += 1
       @@items.push({
-        id: @@last_index,
-        url: data['url']
+        :id => @@last_index,
+        :url => data['url']
       })
-      {status: "ok"} 
+      {status:"ok"} 
+    end 
+
+    put '/:id' do
+      data = JSON.parse(request.body.string)
+      for item in @@items
+        if item[:id] == params[:id].to_i
+          item[:url] = data['url']
+          return {status:"ok"}
+        end
+      end
+     
+      {status:"ng"} 
     end 
 
   end
