@@ -16,10 +16,6 @@ describe 'API' do
     API
   end
 
-  it "test" do
-    puts API.routes
-  end
-
   it "list" do
     get '/api/v1/items'
     expect(last_response).to be_ok
@@ -48,5 +44,15 @@ describe 'API' do
     expect(last_response).to be_ok
     expect(JSON.parse(last_response.body)).to eq({"id"=>3,"url"=>"http://www.facebook.com/"})
   end
+
+  it "delete" do
+    delete '/api/v1/items/3'
+    expect(JSON.parse(last_response.body)).to eq({"status"=>"ok"})
+ 
+    get '/api/v1/items'
+    expect(last_response).to be_ok
+    expect(JSON.parse(last_response.body).length).to eq(2)
+  end
+
 
 end

@@ -50,6 +50,18 @@ class API < Grape::API
       {status:"ng"} 
     end 
 
+    delete '/:id' do
+      @@items.each_with_index do |item, index|
+        if item[:id] == params[:id].to_i
+          @@items.delete_at(index)
+          return {status:"ok"}
+        end
+      end
+     
+      {status:"ng"} 
+    end 
+
+
   end
 
 end
