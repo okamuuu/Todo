@@ -5,22 +5,22 @@ class API < Grape::API
   version 'v1', using: :path
   format :json
 
-  @@items = [
-    {id: 1, url:'http://www.yahoo.co.jp'},
-    {id: 2, url:'http://www.google.com'}
+  @@tasks = [
+    {id: 1, title: 'title1', desc: 'desc1', done: true},
+    {id: 2, title: 'title2', desc: 'desc2', done: true},
   ]
   
   @@last_index = 2
   
-  resource :items do
+  resource :tasks do
     get '/' do
-      @@items
+      @@tasks
     end
 
     get '/:id' do
-      for item in @@items
-        if item[:id] == params[:id].to_i
-          return item
+      for task in @@tasks
+        if task[:id] == params[:id].to_i
+          return task
         end
       end
 
@@ -31,18 +31,22 @@ class API < Grape::API
     post '/' do
       data = JSON.parse(request.body.string)
       @@last_index += 1
-      @@items.push({
-        :id => @@last_index,
-        :url => data['url']
+      @@tasks.push({
+        :id    => @@last_index,
+        :title => data['title'],
+        :desc  => data['desc'],
+        :done  => data['done']
       })
       {status:"ok"} 
     end 
 
     put '/:id' do
       data = JSON.parse(request.body.string)
-      for item in @@items
-        if item[:id] == params[:id].to_i
-          item[:url] = data['url']
+      for task in @@tasks
+        if task[:id] == params[:id].to_i
+          task[:title] = data['title'] if data['title']
+          task[:desc] = data['desc'] if data['desc']
+          task[:done] = data['done'] if data['done']
           return {status:"ok"}
         end
       end
@@ -51,16 +55,15 @@ class API < Grape::API
     end 
 
     delete '/:id' do
-      @@items.each_with_index do |item, index|
-        if item[:id] == params[:id].to_i
-          @@items.delete_at(index)
+      @@tasks.each_with_index do |task, index|
+        if task[:id] == params[:id].to_i
+          @@tasks.delete_at(index)
           return {status:"ok"}
         end
       end
      
       {status:"ng"} 
     end 
-
 
   end
 
