@@ -1,4 +1,5 @@
 require 'grape'
+require 'json'
 
 class API < Grape::API
   prefix 'api'
@@ -29,7 +30,12 @@ class API < Grape::API
     end
 
     post '/' do
-      data = JSON.parse(request.body.string)
+      # TODO: 
+      json = request.body.gets
+      json.gsub('\"', '"')
+      data = JSON.parse(json)
+      
+      puts data
       @@last_index += 1
       @@tasks.push({
         :id    => @@last_index,
@@ -41,7 +47,9 @@ class API < Grape::API
     end 
 
     put '/:id' do
-      data = JSON.parse(request.body.string)
+      json = request.body.gets
+      json.gsub('\"', '"')
+      data = JSON.parse(json)
       for task in @@tasks
         if task[:id] == params[:id].to_i
           task[:title] = data['title'] if data['title']

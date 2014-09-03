@@ -29,7 +29,7 @@ describe 'API' do
   end
 
   it "create" do
-    post '/api/v1/tasks', {:title=>"title3",:desc=>"desc3",:done=>false}.to_json
+    post '/api/v1/tasks', {:title=>'title3',:desc=>'desc3',:done=>false}.to_json
     expect(JSON.parse(last_response.body)).to eq({"status"=>"ok"})
     
     get '/api/v1/tasks'
