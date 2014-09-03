@@ -35,7 +35,6 @@ class API < Grape::API
       json.gsub('\"', '"')
       data = JSON.parse(json)
       
-      puts data
       @@last_index += 1
       @@tasks.push({
         :id    => @@last_index,
@@ -43,6 +42,7 @@ class API < Grape::API
         :desc  => data['desc'],
         :done  => data['done']
       })
+      puts @@tasks
       {status:"ok"} 
     end 
 
