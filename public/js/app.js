@@ -112,33 +112,5 @@
 
   new AddFormView(); 
   new ListView(); 
-//
-//  var observer = {
-//    showArguments:function () {
-//      //console.log("+++observer.showArguments: ");
-//      _.each(arguments, function (item, index) {
-//        //console.log("  +++arguments[" + index + "]: " + JSON.stringify(item));
-//      });
-//    }
-//  };
-//
-//  _.extend(observer, Backbone.Events);
-//  observer.listenTo(taskList, "all", observer.showArguments);
-//
-//  var task = new Task({title: "shopping", desc: "need coffee beans", done: false});
-//
-//  taskList.add(task);
-//      
-//  task.save(null, {
-//    success: function() {
-//      console.log("After save(post) task: " + JSON.stringify(task));
-//      console.log("After save(post) task.isNew(): " + task.isNew());
-//    },
-//    error: function(model, error) {
-//      console.log(error);
-//      console.log(model.toJSON());
-//      console.log('error.responseText');
-//    }
-//  });
 
 }(jQuery));
