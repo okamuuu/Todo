@@ -1,6 +1,6 @@
 # TODO
 
-sample application
+it's sample application
 
 ## USAGE
 
