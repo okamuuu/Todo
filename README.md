@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/okamuuu/Todo.svg?branch=master)](https://travis-ci.org/okamuuu/Todo)
+[![Coverage Status](https://coveralls.io/repos/okamuuu/Todo/badge.png)](https://coveralls.io/r/okamuuu/Todo)
+
 # TODO
 
 it's sample application
