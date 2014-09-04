@@ -8,7 +8,7 @@ class API < Grape::API
 
   @@tasks = [
     {id: 1, title: 'title1', desc: 'desc1', done: true},
-    {id: 2, title: 'title2', desc: 'desc2', done: true},
+    {id: 2, title: 'title2', desc: 'desc2', done: false},
   ]
   
   @@last_index = 2

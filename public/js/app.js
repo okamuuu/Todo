@@ -12,6 +12,9 @@
       if (attributes.title === "") {
         return "title must be not empty.";
       }
+    },
+    toggle: function() {
+      this.save({done: !this.get("done")});
     }
   });
 
@@ -23,34 +26,36 @@
   var taskList = new TaskList();
 
   var ItemView = Backbone.View.extend({
-    tagName: 'li',
-    attributes: {class: 'list-group-item'},
+    tagName: 'div',
+    attributes: {
+      class: 'list-group-item clearfix'
+    },
     events: {
-      'click span.swap': 'swap',
-      'click span.delete': 'remove'
+      'click .toggle': 'toggle',
+      'click .remove': 'remove'
     },
     initialize: function() {
-      _.bindAll(this, 'render', 'unrender', 'swap', 'remove');
+      _.bindAll(this, 'render', 'unrender', 'toggle', 'remove');
       this.model.bind('change', this.render);
       this.model.bind('remove', this.unrender);
     },
     render: function() {
+      console.log(this.model.get('done'));
 
-      var ok = '<span><span class="glyphicon glyphicon-ok" style="color:#ccc"></sapn></span>';
-      var cancel = '<div class="float-right glyphicon glyphicon-remove"></div>';
-      $(this.el).html(ok + ' ' + this.model.get('title') + ' ' + cancel);
-        //'<p class="toggle">'+ (this.model.get('done') ? 'done' : 'yet') + '</p>'
+      // TODO: toggleClass
+      var toggleColor = this.model.get('done') ? '#428bca' : '#EEE'; 
+      console.log(toggleColor);
+      var toggle = '<div class="toggle float-left" style="width:30px;"><span class="glyphicon glyphicon-ok" style="cursor:pointer;color:' + toggleColor + '"></sapn></div>';
+      var title = '<div class="float-left">' + this.model.get('title') + '</div>';
+      var del = '<div class="remove float-right glyphicon glyphicon-remove" style="cursor:pointer;"></div>';
+      $(this.el).html(toggle + title + del);
       return this;
     },
     unrender: function() {
       $(this.el).remove();
     },
-    swap: function() {
-      var swapped = {
-        part1: this.model.get('part2'),
-        part2: this.model.get('part1'),
-      };
-      this.model.set(swapped);
+    toggle: function() {
+      this.model.toggle();
     },
     remove: function() {
       this.model.destroy();
@@ -92,7 +97,7 @@
     },
     render: function() {
       var self = this;
-      $(this.el).append('<ul class="list-group"></ul>');
+      $(this.el).append('<div class="list-group" style="width:600px;"></div>');
       _(this.collection.models).each(function(item){
         self.appendItem(item);
       }, this);
@@ -101,7 +106,7 @@
       var itemView = new ItemView({
         model: item
       });
-      $('ul', this.el).append(itemView.render().el);
+      $('div.list-group', this.el).append(itemView.render().el);
     }
   });
 
