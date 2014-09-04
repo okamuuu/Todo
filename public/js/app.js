@@ -1,24 +1,30 @@
 (function($){
   'use strict'; 
 
-  // Fake
-  Backbone.sync = function(method, model, success, error) {
-    success();
-  };
-
-  var Item = Backbone.Model.extend({
+  var Task = Backbone.Model.extend({
+    idAttribute: "id",
     defaults: {
-      part1: 'hello',
-      part2: 'world'
+      "title": "",
+      "desc": "",
+      "done": false
+    },
+    validate:function (attributes) {
+      if (attributes.title === "") {
+        return "title must be not empty.";
+      }
     }
   });
 
-  var List = Backbone.Collection.extend({
-    model: Item
+  var TaskList = Backbone.Collection.extend({
+    model:Task,
+    url:"/api/v1/tasks"
   });
+
+  var taskList = new TaskList();
 
   var ItemView = Backbone.View.extend({
     tagName: 'li',
+    attributes: {class: 'list-group-item'},
     events: {
       'click span.swap': 'swap',
       'click span.delete': 'remove'
@@ -29,8 +35,11 @@
       this.model.bind('remove', this.unrender);
     },
     render: function() {
-      $(this.el).html('<span style="color:black;">'+this.model.get('part1')+' '+this.model.get('part2')+'</span> &nbsp; &nbsp; <span class="swap" style="font-family:sans-serif; color:blue; cursor:pointer;">[swap]</span> <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>');
 
+      var ok = '<span><span class="glyphicon glyphicon-ok" style="color:#ccc"></sapn></span>';
+      var cancel = '<div class="float-right glyphicon glyphicon-remove"></div>';
+      $(this.el).html(ok + ' ' + this.model.get('title') + ' ' + cancel);
+        //'<p class="toggle">'+ (this.model.get('done') ? 'done' : 'yet') + '</p>'
       return this;
     },
     unrender: function() {
@@ -48,37 +57,45 @@
     }
   });
 
+  var AddFormView = Backbone.View.extend({
+    el: $('#addForm'),
+    events: {
+      'click #addBtn': 'didPushAddButton'
+    },
+    initialize: function() {
+      _.bindAll(this, 'didPushAddButton');
+      this.collection = taskList;
+    },
+    didPushAddButton: function() {
+
+      this.$title = $("#addForm [name='title']");
+      this.$desc  = $("#addForm [name='desc']");
+    
+      this.collection.create(new Task({
+        title: this.$title.val(),
+        desc: this.$desc.val(),
+        done: false
+      }));
+    }
+  });
+
   var ListView = Backbone.View.extend({
     el: $('#list'),
-
-    events: {
-      'click button#add': 'addItem'
-    },
-
     initialize: function() {
-      _.bindAll(this, 'render', 'addItem', 'appendItem');
+      _.bindAll(this, 'render', 'appendItem');
 
-      this.collection = new List();
+      this.collection = taskList;
       this.collection.bind('add', this.appendItem);
 
-      this.counter = 0;
+      this.collection.fetch();
       this.render();
     },
     render: function() {
       var self = this;
-      $(this.el).append('<button id="add">Add list item</button>');
-      $(this.el).append("<ul></ul>");
+      $(this.el).append('<ul class="list-group"></ul>');
       _(this.collection.models).each(function(item){
         self.appendItem(item);
       }, this);
-    },
-    addItem: function() {
-      this.counter++;
-      var item = new Item();
-      item.set({
-        part2: item.get('part2') + this.counter
-      });
-      this.collection.add(item);
     },
     appendItem: function(item) {
       var itemView = new ItemView({
@@ -87,28 +104,9 @@
       $('ul', this.el).append(itemView.render().el);
     }
   });
-  
-  var listView = new ListView();
-//  var Task = Backbone.Model.extend({
-//    idAttribute: "id",
-//    defaults: {
-//      "title": "",
-//      "desc": "",
-//      "done": false
-//    },
-//    validate:function (attributes) {
-//      if (attributes.title === "") {
-//        return "title must be not empty.";
-//      }
-//    }
-//  });
-//
-//  var TaskList = Backbone.Collection.extend({
-//    model:Task,
-//    url:"/api/v1/tasks"
-//  });
-//
-//  var taskList = new TaskList();
+
+  new AddFormView(); 
+  new ListView(); 
 //
 //  var observer = {
 //    showArguments:function () {
